@@ -1,0 +1,85 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: localtube-postgres
+    environment:
+      POSTGRES_DB: localtube
+      POSTGRES_USER: localtube
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-localtube123}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - localtube-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U localtube"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.postgres
+    container_name: localtube-backend
+    environment:
+      - NODE_ENV=production
+      - VIDEOS_DIR=/videos
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=localtube
+      - DB_USER=localtube
+      - DB_PASSWORD=${DB_PASSWORD:-localtube123}
+    volumes:
+      - ${VIDEOS_DIR:-$${VIDEOS_DIR:-~/Videos}}:/videos:ro
+      - localtube-thumbnails:/app/thumbnails
+    ports:
+      - "3001:3001"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - localtube-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: localtube-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - localtube-network
+
+  # Optional: pgAdmin for database management
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: localtube-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@localtube.local}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-admin}
+    ports:
+      - "5050:80"
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    depends_on:
+      - postgres
+    networks:
+      - localtube-network
+
+volumes:
+  postgres-data:
+    driver: local
+  localtube-thumbnails:
+    driver: local
+  pgadmin-data:
+    driver: local
+
+networks:
+  localtube-network:
+    driver: bridge

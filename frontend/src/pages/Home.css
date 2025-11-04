@@ -1,0 +1,16 @@
+.home {
+  padding: 20px 0;
+}
+
+.search-results-title {
+  font-size: 20px;
+  margin-bottom: 20px;
+  color: var(--text-secondary);
+}
+
+.loading, .no-videos {
+  text-align: center;
+  padding: 40px;
+  color: var(--text-secondary);
+  font-size: 18px;
+}

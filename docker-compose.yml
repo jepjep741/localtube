@@ -1,0 +1,24 @@
+version: '3'
+
+services:
+  backend:
+    build: ./backend
+    container_name: localtube-backend
+    environment:
+      - NODE_ENV=production
+      - VIDEOS_DIR=/videos
+      - DB_PATH=/app/data/videos.db
+    volumes:
+      - $${VIDEOS_DIR:-~/Videos}:/videos:ro
+      - ./data:/app/data
+      - ./thumbnails:/app/thumbnails
+    ports:
+      - "3001:3001"
+
+  frontend:
+    build: ./frontend
+    container_name: localtube-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend

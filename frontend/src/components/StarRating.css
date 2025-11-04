@@ -1,0 +1,40 @@
+.star-rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.star-button {
+  padding: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.1s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.star-rating.interactive .star-button:hover {
+  transform: scale(1.1);
+}
+
+.star-rating.interactive .star-button:hover .star {
+  stroke: #FFD700;
+}
+
+.star-rating.readonly .star-button {
+  cursor: default;
+}
+
+.star {
+  transition: all 0.2s;
+}
+
+.star.filled {
+  color: #FFD700;
+}
+
+.star.empty {
+  color: #666;
+}

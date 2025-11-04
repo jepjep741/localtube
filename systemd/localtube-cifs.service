@@ -1,0 +1,14 @@
+[Unit]
+Description=LocalTube CIFS Mount
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+EnvironmentFile=/home/USER/work/localtube/.env.cifs
+ExecStart=/bin/mount -t cifs ${CIFS_SHARE} /mnt/localtube-videos -o username=${CIFS_USERNAME},password=${CIFS_PASSWORD},uid=1000,gid=1000,file_mode=0755,dir_mode=0755,vers=3.0
+ExecStop=/bin/umount /mnt/localtube-videos
+
+[Install]
+WantedBy=multi-user.target

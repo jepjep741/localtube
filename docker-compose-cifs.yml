@@ -1,0 +1,49 @@
+version: '3'
+
+services:
+  backend:
+    build: ./backend
+    container_name: localtube-backend
+    environment:
+      - NODE_ENV=production
+      - VIDEOS_DIR=/videos
+    volumes:
+      # Mount CIFS share as videos directory
+      - type: volume
+        source: cifs-videos
+        target: /videos
+        read_only: true
+      # Local data persistence
+      - ./data:/app/data
+      - ./thumbnails:/app/thumbnails
+    ports:
+      - "3001:3001"
+    depends_on:
+      - cifs-mount
+
+  frontend:
+    build: ./frontend
+    container_name: localtube-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+
+  # Helper service to ensure CIFS is mounted
+  cifs-mount:
+    image: alpine
+    container_name: localtube-cifs-helper
+    command: /bin/sh -c "echo 'CIFS mount ready' && sleep infinity"
+    volumes:
+      - type: volume
+        source: cifs-videos
+        target: /videos
+    restart: unless-stopped
+
+volumes:
+  cifs-videos:
+    driver: local
+    driver_opts:
+      type: cifs
+      o: "username=${CIFS_USERNAME},password=${CIFS_PASSWORD},uid=1000,gid=1000,file_mode=0755,dir_mode=0755,vers=3.0"
+      device: "${CIFS_SHARE}"

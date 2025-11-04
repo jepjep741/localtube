@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: localtube-backend
+    environment:
+      - NODE_ENV=production
+      - VIDEOS_DIR=/videos
+      - DB_PATH=/app/data/videos.db
+      - THUMBNAILS_DIR=/app/thumbnails
+    volumes:
+      # Mount your videos directory (change this path to your videos location)
+      - ${VIDEOS_DIR:-/home/USER/Videos}:/videos:ro
+      # Persist database and thumbnails
+      - localtube-data:/app/data
+      - localtube-thumbnails:/app/thumbnails
+    ports:
+      - "3001:3001"
+    restart: unless-stopped
+    networks:
+      - localtube-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: localtube-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+    networks:
+      - localtube-network
+
+volumes:
+  localtube-data:
+    driver: local
+  localtube-thumbnails:
+    driver: local
+
+networks:
+  localtube-network:
+    driver: bridge

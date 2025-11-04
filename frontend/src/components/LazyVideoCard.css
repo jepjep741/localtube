@@ -1,0 +1,45 @@
+@keyframes shimmer {
+  0% {
+    background-position: -468px 0;
+  }
+  100% {
+    background-position: 468px 0;
+  }
+}
+
+.video-card-skeleton {
+  background-color: var(--bg-secondary);
+  border-radius: 12px;
+  overflow: hidden;
+  height: 100%;
+}
+
+.skeleton-thumbnail {
+  width: 100%;
+  padding-top: 56.25%;
+  background: linear-gradient(to right, var(--bg-secondary) 0%, var(--bg-hover) 20%, var(--bg-secondary) 40%, var(--bg-secondary) 100%);
+  background-size: 936px 100%;
+  animation: shimmer 1.5s linear infinite;
+}
+
+.skeleton-info {
+  padding: 12px;
+}
+
+.skeleton-title {
+  height: 40px;
+  margin-bottom: 8px;
+  background: linear-gradient(to right, var(--bg-hover) 0%, var(--border) 20%, var(--bg-hover) 40%, var(--bg-hover) 100%);
+  background-size: 936px 100%;
+  animation: shimmer 1.5s linear infinite;
+  border-radius: 4px;
+}
+
+.skeleton-meta {
+  height: 20px;
+  width: 60%;
+  background: linear-gradient(to right, var(--bg-hover) 0%, var(--border) 20%, var(--bg-hover) 40%, var(--bg-hover) 100%);
+  background-size: 936px 100%;
+  animation: shimmer 1.5s linear infinite;
+  border-radius: 4px;
+}
