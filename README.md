@@ -30,7 +30,7 @@ A self-hosted video streaming platform for your local video collection.
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/localtube.git
+   git clone https://github.com/jepjep741/localtube.git
    cd localtube
    ```
 
