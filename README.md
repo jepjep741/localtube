@@ -36,7 +36,7 @@ A self-hosted video streaming platform for your local video collection.
 
 2. Copy the example environment file:
    ```bash
-   cp .env.example .env
+   cp env.example .env
    ```
 
 3. Edit `.env` and set your videos directory:
